@@ -12,10 +12,19 @@ https://github.com/user-attachments/assets/97233790-a8df-4e90-ac1c-fe534aa04561
 
 <details>
 <summary>Table of Contents</summary>
+	<li><a href="#description">Description</a></li>
 	<li><a href="#installation">Installation</a></li>
     <li><a href="#configuration">Configuration</a></li>
 	<li><a href="#commands">Commands</a></li>
 </details>
+
+## Description
+The main goal of this plugin is to add the ability to attach notes to words and view them in a floating window
+
+Features:
+- Notes can be grouped by categories with the same formatting
+- A category can be set for a workspace, a buffer, or an individual file
+- Retrieves the closest matching word (up to a difference of half the word's length)
 
 
 ## Installation
