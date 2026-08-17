@@ -21,6 +21,8 @@ https://github.com/user-attachments/assets/97233790-a8df-4e90-ac1c-fe534aa04561
 ## Description
 The main goal of this plugin is to add the ability to attach notes to words and view them in a floating window
 
+The same note is displayed for every occurrence of this word, not only in specific line/file/buffer 
+
 Features:
 - Notes can be grouped by categories with the same formatting
 - A category can be set for a workspace, a buffer, or an individual file
