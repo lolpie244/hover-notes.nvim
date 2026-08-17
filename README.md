@@ -72,3 +72,8 @@ require("hover-notes").setup({
 | `HNSetBuffer {name}`          | Set notes category for the buffer        |
 | `HNSetFile {name}`            | Set notes category for the file          |
 
+
+
+## TODO
+- [ ] Add Quiz mode
+- [ ] Add confirmation on removal; move category to trash
