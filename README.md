@@ -77,3 +77,4 @@ require("hover-notes").setup({
 ## TODO
 - [ ] Add Quiz mode
 - [ ] Add confirmation on removal; move category to trash
+- [ ] Visual highlight of the words with notes
