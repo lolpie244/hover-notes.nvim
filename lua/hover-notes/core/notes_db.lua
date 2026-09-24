@@ -10,6 +10,7 @@ function NotesDB:new(path)
 	instance.filename = path
 	instance.data = utils.load_json(path) or {}
 	instance.data.__meta__ = instance.data.__meta__ or {}
+	instance:set_meta("words_len", instance:get_meta("words_len") or 0)
 
 	return instance
 end
@@ -70,7 +71,7 @@ function NotesDB:get(word)
 	local lowest_distance = math.huge
 	local target_word = word:lower()
 
-    local max_allowed_distance = math.max(0, math.ceil(#word / 2) - 1)
+	local max_allowed_distance = math.max(0, math.ceil(#word / 2) - 1)
 
 	for key, _ in pairs(self.data) do
 		if key ~= "__meta__" then
@@ -90,7 +91,14 @@ function NotesDB:get(word)
 	return nil, word
 end
 
+function NotesDB:words_len()
+	return self:get_meta("words_len") or 0
+end
+
 function NotesDB:set(word, note_content)
+	if not self.data[word] then
+		self:set_meta("words_len", self:get_meta("words_len") + #word)
+	end
 	self.data[word] = note_content
 	return self:save()
 end

@@ -12,6 +12,10 @@ function M.setup(opts)
 	constants.setup()
 	manager.setup()
 
+    if config.options.highlight.enable then
+        ui.setup_highlight(manager)
+    end
+
 	if vim.fn.isdirectory(config.options.notesDir) == 0 then
 		vim.fn.mkdir(config.options.notesDir, "p")
 	end

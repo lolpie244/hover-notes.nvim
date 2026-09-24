@@ -2,6 +2,7 @@ local UI = {}
 local config = require("hover-notes.config")
 
 local FloatEditor = require("hover-notes.ui.float_editor")
+local Higlight = require("hover-notes.ui.highlights")
 
 function UI.open_float_editor(title, fields, on_save)
 	FloatEditor:new(title, fields, on_save)
@@ -28,6 +29,10 @@ function UI.show_hover(title, text)
 		border = opts.border,
         title = " " .. title .. " ",
 	})
+end
+
+function UI.setup_highlight(manager)
+    Higlight.setup(manager)
 end
 
 return UI

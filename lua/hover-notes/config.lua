@@ -12,6 +12,12 @@ config.options = {
 			border = "rounded",
 		},
 	},
+	highlight = {
+		enable = true,
+		-- if length of words in dictionary is longer than subsstr_match_size_limit use exact word match
+		subsstr_match_size_limit = 1000,
+		style = { underline = true, sp = vim.api.nvim_get_hl(0, { name = "String", link = false }).fg, bold = true, default = true },
+	},
 }
 
 function config.set_options(opts)
