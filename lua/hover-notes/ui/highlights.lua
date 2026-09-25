@@ -1,7 +1,6 @@
 local Highlight = {}
 Highlight.__index = Highlight
 
-local constants = require("hover-notes.constants")
 local config = require("hover-notes.config")
 
 local win_bounds = {}
@@ -15,7 +14,7 @@ local function exact_word_match(bufnr, row, win_bound, words_dict)
 
 	local start_idx = nil
 	local end_idx = win_bound.left + 1
-	while true do
+	while end_idx < win_bound.right do
 		start_idx, end_idx = string.find(line, "[%w_-]+", end_idx)
 		if not start_idx or start_idx > win_bound.right then
 			break
@@ -40,17 +39,20 @@ local function substring_match(bufnr, row, win_bound, regex)
 		return matches
 	end
 
-	local start_idx = nil
+	local start_idx = 0
 	local end_idx = win_bound.left
 
 	local scan_limit = math.min(win_bound.right, #line)
 
-	while true do
-		start_idx, end_idx = regex:match_line(bufnr, row, end_idx, scan_limit)
+	while end_idx < scan_limit do
+		local rel_start, rel_end = regex:match_line(bufnr, row, end_idx, scan_limit)
 
-		if not start_idx or start_idx > win_bound.right then
+		if not rel_start or end_idx + rel_start > win_bound.right then
 			break
 		end
+
+        start_idx = end_idx + rel_start
+        end_idx = end_idx + rel_end
 
 		table.insert(matches, { start_idx, end_idx })
 	end
