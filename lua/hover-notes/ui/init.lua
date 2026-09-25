@@ -2,7 +2,7 @@ local UI = {}
 local config = require("hover-notes.config")
 
 local FloatEditor = require("hover-notes.ui.float_editor")
-local Higlight = require("hover-notes.ui.highlights")
+local Highlight = require("hover-notes.ui.highlights")
 
 function UI.open_float_editor(title, fields, on_save)
 	FloatEditor:new(title, fields, on_save)
@@ -25,14 +25,17 @@ function UI.show_hover(title, text)
 	local opts = config.options.ui.float
 
 	local lines = vim.split(text, "\n", { plain = true })
-	vim.lsp.util.open_floating_preview(lines, "markdown", {
-		border = opts.border,
-        title = " " .. title .. " ",
-	})
+
+	vim.schedule(function()
+		vim.lsp.util.open_floating_preview(lines, "markdown", {
+			border = opts.border,
+			title = " " .. title .. " ",
+		})
+	end)
 end
 
 function UI.setup_highlight(manager)
-    Higlight.setup(manager)
+	Highlight.setup(manager)
 end
 
 return UI

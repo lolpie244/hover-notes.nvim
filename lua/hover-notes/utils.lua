@@ -48,4 +48,12 @@ function utils.merge_arrays(...)
 	return mergedArray
 end
 
+function utils.get_visual_selection()
+	return table.concat(vim.fn.getregion(vim.fn.getpos("v"), vim.fn.getpos(".")), "\n")
+end
+
+function utils.get_command_visual_selection()
+	return table.concat(vim.fn.getregion(vim.fn.getpos("'<"), vim.fn.getpos("'>")), "\n")
+end
+
 return utils

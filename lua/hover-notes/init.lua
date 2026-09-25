@@ -12,9 +12,9 @@ function M.setup(opts)
 	constants.setup()
 	manager.setup()
 
-    if config.options.highlight.enable then
-        ui.setup_highlight(manager)
-    end
+	if config.options.highlight.enable then
+		ui.setup_highlight(manager)
+	end
 
 	if vim.fn.isdirectory(config.options.notesDir) == 0 then
 		vim.fn.mkdir(config.options.notesDir, "p")
@@ -55,7 +55,10 @@ function M.show_note(word)
 		return
 	end
 
-	word = vim.trim(word or vim.fn.expand("<cword>")):lower()
+	word = vim.trim(word):lower()
+	if not word or word == "" then
+		return
+	end
 
 	local msg, word = cat:get_note(word)
 	if not msg then
@@ -72,7 +75,7 @@ function M.add_edit_note(word)
 		return
 	end
 
-	word = vim.trim(word or vim.fn.expand("<cword>")):lower()
+	word = vim.trim(word):lower()
 	if not word or word == "" then
 		return
 	end
@@ -96,6 +99,10 @@ function M.add_edit_note(word)
 		cat:set_note(word, new_vars)
 		vim.notify("Saved note for '" .. word .. "'", vim.log.levels.INFO)
 	end)
+end
+
+function M.get_category()
+	return manager:get_current_category().name
 end
 
 local function select_category(name, action_fn, include)
@@ -123,6 +130,7 @@ function M.set_buffer_category(name)
 		if cat_name == "Create new category" then
 			cat_name = M.create_category(nil)
 		end
+		manager.set_buffer_category(cat_name)
 	end, { "Create new category" })
 end
 
@@ -131,6 +139,7 @@ function M.set_file_category(name)
 		if cat_name == "Create new category" then
 			cat_name = M.create_category(nil)
 		end
+		manager.set_file_category(cat_name)
 	end, { "Create new category" })
 end
 
