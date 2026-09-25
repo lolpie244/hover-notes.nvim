@@ -11,12 +11,13 @@ local function exact_word_match(bufnr, row, win_bound, words_dict)
 	local matches = {}
 
 	local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1]
+    local limit = math.min(#line, win_bound.right)
 
 	local start_idx = nil
 	local end_idx = win_bound.left + 1
-	while end_idx < win_bound.right do
+	while end_idx <= limit do
 		start_idx, end_idx = string.find(line, "[%w_-]+", end_idx)
-		if not start_idx or start_idx > win_bound.right then
+		if not start_idx or start_idx > limit then
 			break
 		end
 
@@ -39,22 +40,26 @@ local function substring_match(bufnr, row, win_bound, regex)
 		return matches
 	end
 
+    local limit = math.min(#line, win_bound.right)
+
 	local start_idx = 0
 	local end_idx = win_bound.left
 
-	local scan_limit = math.min(win_bound.right, #line)
+	while end_idx < limit do
+		local rel_start, rel_end = regex:match_line(bufnr, row, end_idx, limit)
 
-	while end_idx < scan_limit do
-		local rel_start, rel_end = regex:match_line(bufnr, row, end_idx, scan_limit)
-
-		if not rel_start or end_idx + rel_start > win_bound.right then
+		if not rel_start or end_idx + rel_start > limit then
 			break
 		end
 
-        start_idx = end_idx + rel_start
-        end_idx = end_idx + rel_end
+		start_idx = end_idx + rel_start
+		end_idx = end_idx + rel_end
 
 		table.insert(matches, { start_idx, end_idx })
+
+        if start_idx == end_idx then
+            end_idx = end_idx + 1
+        end
 	end
 
 	return matches
@@ -72,13 +77,20 @@ function Highlight.setup(cat_manager)
 			if not cat_manager.get_current_category() or not cat_manager.get_current_category().db.data then
 				return false
 			end
-			local leftcol = 0
-			if winnr == vim.api.nvim_get_current_win() then
-				leftcol = vim.fn.winsaveview().leftcol
+
+			local left = 0
+			local right = math.huge
+
+			if not vim.wo[winnr].wrap then
+				if winnr == vim.api.nvim_get_current_win() then
+					left = vim.fn.winsaveview().leftcol
+				end
+				right = left + vim.api.nvim_win_get_width(winnr)
 			end
+
 			win_bounds[winnr] = {
-				left = leftcol,
-				right = leftcol + vim.api.nvim_win_get_width(winnr),
+				left = left,
+				right = right,
 			}
 
 			return true
