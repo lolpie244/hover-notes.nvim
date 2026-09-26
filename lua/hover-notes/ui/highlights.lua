@@ -11,7 +11,7 @@ local function exact_word_match(bufnr, row, win_bound, words_dict)
 	local matches = {}
 
 	local line = vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false)[1]
-    local limit = math.min(#line, win_bound.right)
+	local limit = math.min(#line, win_bound.right)
 
 	local start_idx = nil
 	local end_idx = win_bound.left + 1
@@ -40,7 +40,7 @@ local function substring_match(bufnr, row, win_bound, regex)
 		return matches
 	end
 
-    local limit = math.min(#line, win_bound.right)
+	local limit = math.min(#line, win_bound.right)
 
 	local start_idx = 0
 	local end_idx = win_bound.left
@@ -57,9 +57,9 @@ local function substring_match(bufnr, row, win_bound, regex)
 
 		table.insert(matches, { start_idx, end_idx })
 
-        if start_idx == end_idx then
-            end_idx = end_idx + 1
-        end
+		if start_idx == end_idx then
+			end_idx = end_idx + 1
+		end
 	end
 
 	return matches

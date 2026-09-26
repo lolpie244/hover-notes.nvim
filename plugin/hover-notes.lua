@@ -66,3 +66,9 @@ command("HNGetCategory", function(opts)
 end, {
 	nargs = "?",
 })
+
+vim.api.nvim_create_user_command("HNQuiz", function(opts)
+	hover.quiz_mode(get_word(opts))
+end, {
+	nargs = "?",
+})

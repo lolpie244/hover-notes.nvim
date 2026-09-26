@@ -101,6 +101,31 @@ function M.add_edit_note(word)
 	end)
 end
 
+function M.quiz_mode(word)
+	local cat = manager.get_current_category()
+	if not cat then
+		vim.notify("No active category!", vim.log.levels.WARN)
+		return
+	end
+
+	word = vim.trim(word):lower()
+	if not word or word == "" or not cat.db:get(word) then
+		return
+	end
+
+	local fields = {}
+	for _, field_name in ipairs(cat.fields) do
+		table.insert(fields, {
+			name = field_name,
+			value = "",
+			placeholder = "Enter " .. field_name .. "...",
+		})
+	end
+	ui.open_float_editor("Fill fields for " .. word, fields, function(values)
+		ui.open_float_diff(word, fields, values, cat.db:get(word))
+	end)
+end
+
 function M.get_category()
 	return manager:get_current_category().name
 end
