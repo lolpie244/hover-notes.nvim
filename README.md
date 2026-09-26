@@ -21,13 +21,15 @@ https://github.com/user-attachments/assets/97233790-a8df-4e90-ac1c-fe534aa04561
 ## Description
 The main goal of this plugin is to add the ability to attach notes to words and view them in a floating window
 
-The same note is displayed for every occurrence of this word, not only in specific line/file/buffer 
+The same note is displayed for every occurrence of this word, not only in specific line/file/buffer
 
 Features:
 - Notes can be grouped by categories with the same formatting
 - A default category is maintained for each workspace individually
 - A category can be set for a workspace, a buffer, or an individual file
 - Retrieves the closest matching word (up to a difference of half the word's length)
+- Highlight with support for big files & big dictionaries
+- Quiz mode to test your knowledge
 
 
 ## Installation
@@ -69,24 +71,37 @@ require("hover-notes").setup({
 			border = "rounded",
 		},
 	},
+    highlight = {
+		enable = true,
+		-- if length of words in dictionary is longer than subsstr_match_size_limit - use exact word match instead of substring
+		subsstr_match_size_limit = 1000,
+		style = { underline = true, sp = vim.api.nvim_get_hl(0, { name = "String", link = false }).fg, bold = true, default = true },
+	},
+
 })
 ```
 - - -
 ## Commands
+| Command                       | Description                                                     |
+| ----------------------------- | --------------------------------------------------------------- |
+| `HNShow {word}`               | Show the note for the word*                                     |
+| `HNEdit {word}`               | Add/edit the note for the word*                                 |
+| `HNDeleteNote {word}`         | Delete the note for the word*                                   |
+| `HNQuiz {word}`               | Start Quiz mode for the word*                                   |
+| `HNCreateCategory {name}`     | Create new notes category                                       |
+| `HNDeleteCategory {name}`     | Delete existing category with all notes                         |
+| `HNGetCategory`               | Get category used by this buffer                                |
+| `HNSetWorkspace {name}`       | Set notes category for the workspace                            |
+| `HNSetBuffer {name}`          | Set notes category for the buffer                               |
+| `HNSetFile {name}`            | Set notes category for the file                                 |
 
-| Command                       | Description                              |
-| ----------------------------- | ---------------------------------------- |
-| `HNShow`                      | Show note for word under cursor          |
-| `HNEdit`                      | Add/edit note for word under cursor      |
-| `HNCreateCategory {name}`     | Create new notes category                |
-| `HNDeleteCategory {name}`     | Delete existing category with all notes  |
-| `HNSetWorkspace {name}`       | Set notes category for the workspace     |
-| `HNSetBuffer {name}`          | Set notes category for the buffer        |
-| `HNSetFile {name}`            | Set notes category for the file          |
-
+\*All commands that target a word (`HNShow, HNEdit...`) will automatically prioritize:
+1) Word provided as an argument: `:HNShow lorem`
+2) A visual selection
+3) The word under cursor
 
 
 ## TODO
 - [x] Add Quiz mode
-- [ ] Add confirmation on removal; move category to trash
+- [x] Add confirmation on removal
 - [x] Visual highlight of the words with notes
