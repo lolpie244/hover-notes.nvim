@@ -31,6 +31,13 @@ end, {
 	range = true,
 })
 
+command("HNDeleteNote", function(opts)
+	hover.delete_note(get_word(opts))
+end, {
+	nargs = "?",
+	range = true,
+})
+
 command("HNCreateCategory", function(opts)
 	hover.create_category(opts.args ~= "" and opts.args or nil)
 end, {

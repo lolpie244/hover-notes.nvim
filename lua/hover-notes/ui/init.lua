@@ -1,6 +1,7 @@
 local UI = {}
 local config = require("hover-notes.config")
 
+local ConfirmDialog = require("hover-notes.ui.confirm_dialog")
 local FloatWindow = require("hover-notes.ui.float_window")
 local FloatEditor = require("hover-notes.ui.float_editor")
 local FloatDiff = require("hover-notes.ui.float_diff")
@@ -11,7 +12,7 @@ function UI.open_float_editor(title, fields, on_save)
 end
 
 function UI.open_float_diff(title, fields, attempt, correct)
-    local is_perfect = true
+	local is_perfect = true
 
 	for _, field in ipairs(fields) do
 		if vim.trim(attempt[field.name] or "") ~= vim.trim(correct[field.name] or "") then
@@ -20,19 +21,19 @@ function UI.open_float_diff(title, fields, attempt, correct)
 		end
 	end
 
-    if is_perfect then
-        local perfect_fields = {}
-        for _, field in ipairs(fields) do
-            table.insert(perfect_fields, {
-                name = field.name,
-                value = correct[field.name] or "",
-            })
-        end
+	if is_perfect then
+		local perfect_fields = {}
+		for _, field in ipairs(fields) do
+			table.insert(perfect_fields, {
+				name = field.name,
+				value = correct[field.name] or "",
+			})
+		end
 
-        local window = FloatWindow:new("Perfect match", perfect_fields)
-        window:set_modifiable(false)
-        return
-    end
+		local window = FloatWindow:new("Perfect match", perfect_fields)
+		window:set_modifiable(false)
+		return
+	end
 
 	FloatDiff:new(title, fields, attempt, correct)
 end
@@ -61,6 +62,10 @@ function UI.show_hover(title, text)
 			title = " " .. title .. " ",
 		})
 	end)
+end
+
+function UI.confirm_dialog(prompt, on_confirm)
+    ConfirmDialog:new(prompt, on_confirm)
 end
 
 function UI.setup_highlight(manager)

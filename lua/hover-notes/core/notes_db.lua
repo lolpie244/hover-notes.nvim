@@ -2,7 +2,6 @@ local NotesDB = {}
 NotesDB.__index = NotesDB
 
 local utils = require("hover-notes.utils")
-local constants = require("hover-notes.constants")
 
 function NotesDB:new(path)
 	local instance = setmetatable({}, NotesDB)
@@ -59,7 +58,7 @@ local function levenshtein_distance(str1, str2, max_dist)
 end
 
 function NotesDB:get(word)
-	if word == "__meta__" then
+	if not word or word == "" or word == "__meta__" then
 		return nil
 	end
 
@@ -101,6 +100,10 @@ function NotesDB:set(word, note_content)
 	end
 	self.data[word] = note_content
 	return self:save()
+end
+
+function NotesDB:delete_note(word)
+    self.data[word] = nil
 end
 
 function NotesDB:get_meta(key)

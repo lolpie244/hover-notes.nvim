@@ -56,9 +56,6 @@ function M.show_note(word)
 	end
 
 	word = vim.trim(word):lower()
-	if not word or word == "" then
-		return
-	end
 
 	local msg, word = cat:get_note(word)
 	if not msg then
@@ -98,6 +95,23 @@ function M.add_edit_note(word)
 
 		cat:set_note(word, new_vars)
 		vim.notify("Saved note for '" .. word .. "'", vim.log.levels.INFO)
+	end)
+end
+
+function M.delete_note(word)
+	local cat = manager.get_current_category()
+	if not cat then
+		vim.notify("No active category!", vim.log.levels.WARN)
+		return
+	end
+
+	local msg, word = cat:get_note(word)
+	if not msg then
+		return
+	end
+
+	ui.confirm_dialog('Delete note "' .. word .. '"?', function()
+        cat:delete_note(word)
 	end)
 end
 
@@ -170,7 +184,9 @@ end
 
 function M.delete_category(name)
 	select_category(name, function(cat_name)
-		manager.delete_category(cat_name)
+		ui.confirm_dialog('Delete category "' .. cat_name .. '"?', function()
+			manager.delete_category(cat_name)
+		end)
 	end, {})
 end
 return M

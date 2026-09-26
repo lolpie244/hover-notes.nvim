@@ -51,6 +51,10 @@ function Category:get_note(word)
 	return result_string, matched_word
 end
 
+function Category:delete_note(word)
+    self.db:delete_note(word)
+end
+
 function Category:delete()
 	self.db:delete()
 
