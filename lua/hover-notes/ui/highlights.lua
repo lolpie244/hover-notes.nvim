@@ -73,8 +73,19 @@ function Highlight.setup(cat_manager)
 			win_bounds = {}
 			return true
 		end,
-		on_win = function(_, winnr, _, _, _)
-			if not cat_manager.get_current_category() or not cat_manager.get_current_category().db.data then
+		on_win = function(_, winnr, bufnr, _, _)
+			local win_cfg = vim.api.nvim_win_get_config(winnr)
+			if win_cfg.relative and win_cfg.relative ~= "" then
+				return false
+			end
+
+			bufnr = (bufnr and bufnr ~= 0) and bufnr or vim.api.nvim_win_get_buf(winnr)
+			if vim.bo[bufnr].buftype ~= "" then
+				return false
+			end
+
+			local cat = cat_manager.get_current_category(bufnr)
+			if not cat or not cat.db or not cat.db.data then
 				return false
 			end
 
@@ -97,7 +108,10 @@ function Highlight.setup(cat_manager)
 		end,
 
 		on_line = function(_, winnr, bufnr, row)
-			local cat = cat_manager.get_current_category()
+			local cat = cat_manager.get_current_category(bufnr)
+			if not cat or not cat.db or not cat.db.data then
+				return
+			end
 
 			local matches = {}
 

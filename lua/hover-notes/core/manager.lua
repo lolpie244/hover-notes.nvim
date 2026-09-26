@@ -245,8 +245,8 @@ function CategoryManager.set_file_category(name)
 	end
 end
 
-function CategoryManager.get_current_category()
-	local bufnr = vim.api.nvim_get_current_buf()
+function CategoryManager.get_current_category(bufnr)
+	bufnr = (bufnr and bufnr ~= 0) and bufnr or vim.api.nvim_get_current_buf()
 	local filepath = utils.global_filepath(bufnr)
 	local current_ws = CategoryManager.get_workspace_path()
 

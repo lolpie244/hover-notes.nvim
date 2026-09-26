@@ -2,9 +2,11 @@ local utils = {}
 
 function utils.global_filepath(bufnr)
 	bufnr = bufnr or 0
-	return vim.api.nvim_buf_call(bufnr, function()
-		return vim.fn.expand("%:p")
-	end)
+	local name = vim.api.nvim_buf_get_name(bufnr)
+	if name and name ~= "" then
+		return vim.fs.normalize(name)
+	end
+	return ""
 end
 
 function utils.load_json(path)
