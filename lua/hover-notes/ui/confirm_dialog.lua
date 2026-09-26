@@ -25,19 +25,37 @@ function ConfirmDialog:new(prompt, on_confirm)
 		title_pos = "center",
 	})
 
-    vim.o.guicursor = 'a:noCursor'
-    vim.wo[self.winnr].cursorline = false
+	-- disable cursor
+	vim.api.nvim_set_hl(0, "HoverNotesHiddenCursor", { blend = 100, nocombine = true })
+	self.old_guicursor = vim.o.guicursor
+	vim.o.guicursor = "a:HoverNotesHiddenCursor/lCursor"
+	vim.wo[self.winnr].cursorline = false
 
 	vim.bo[self.bufnr].modifiable = false
 	vim.bo[self.bufnr].bufhidden = "wipe"
 
 	self:register_keymaps()
+	return self
 end
 
 function ConfirmDialog:close()
+	if self.old_guicursor then
+		vim.o.guicursor = self.old_guicursor
+		self.old_guicursor = nil
+	end
 	if vim.api.nvim_win_is_valid(self.winnr) then
 		vim.api.nvim_win_close(self.winnr, true)
 	end
+end
+
+function ConfirmDialog:register_autocmds()
+	vim.api.nvim_create_autocmd({ "BufLeave", "WinClosed" }, {
+		buffer = self.bufnr,
+		once = true,
+		callback = function()
+			self:close()
+		end,
+	})
 end
 
 function ConfirmDialog:register_keymaps()

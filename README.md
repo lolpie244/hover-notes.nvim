@@ -25,6 +25,7 @@ The same note is displayed for every occurrence of this word, not only in specif
 
 Features:
 - Notes can be grouped by categories with the same formatting
+- A default category is maintained for each workspace individually
 - A category can be set for a workspace, a buffer, or an individual file
 - Retrieves the closest matching word (up to a difference of half the word's length)
 

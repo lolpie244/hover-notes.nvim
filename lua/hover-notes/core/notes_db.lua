@@ -9,7 +9,7 @@ function NotesDB:new(path)
 	instance.filename = path
 	instance.data = utils.load_json(path) or {}
 	instance.data.__meta__ = instance.data.__meta__ or {}
-	instance:set_meta("words_len", instance:get_meta("words_len") or 0)
+	instance.data.__meta__.words_len = instance.data.__meta__.words_len or 0
 
 	return instance
 end
@@ -103,7 +103,20 @@ function NotesDB:set(word, note_content)
 end
 
 function NotesDB:delete_note(word)
-    self.data[word] = nil
+	if self.data[word] then
+		local len = #word
+		self.data[word] = nil
+		local new_len = math.max(0, self:words_len() - len)
+
+		if new_len == 0 then
+			self.data.__meta__["words_len"] = 0
+			if self.filename and vim.fn.filereadable(self.filename) == 1 then
+				vim.fn.delete(self.filename)
+			end
+		else
+			self:set_meta("words_len", new_len)
+		end
+	end
 end
 
 function NotesDB:get_meta(key)
@@ -116,6 +129,10 @@ function NotesDB:set_meta(key, value)
 end
 
 function NotesDB:save()
+	if not self.filename then
+		return false
+	end
+
 	local ok, encoded = pcall(vim.json.encode, self.data)
 	if not ok then
 		return false
@@ -132,9 +149,11 @@ function NotesDB:save()
 end
 
 function NotesDB:delete()
-	vim.fn.delete(self.filename)
+	if self.filename and vim.fn.filereadable(self.filename) == 1 then
+		vim.fn.delete(self.filename)
+	end
 	self.filename = nil
-	self.data = nil
+	self.data = { __meta__ = { words_len = 0 } }
 end
 
 return NotesDB

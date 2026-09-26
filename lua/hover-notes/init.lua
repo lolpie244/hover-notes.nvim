@@ -141,7 +141,8 @@ function M.quiz_mode(word)
 end
 
 function M.get_category()
-	return manager:get_current_category().name
+	local cat = manager.get_current_category()
+	return cat and cat.name or ""
 end
 
 local function select_category(name, action_fn, include)
@@ -158,7 +159,8 @@ end
 function M.set_workspace_category(name)
 	select_category(name, function(cat_name)
 		if cat_name == "Create new category" then
-			cat_name = M.create_category(nil)
+			M.create_category(nil)
+			return
 		end
 		manager.set_workspace_category(cat_name)
 	end, { "Create new category" })
@@ -167,7 +169,8 @@ end
 function M.set_buffer_category(name)
 	select_category(name, function(cat_name)
 		if cat_name == "Create new category" then
-			cat_name = M.create_category(nil)
+			M.create_category(nil)
+			return
 		end
 		manager.set_buffer_category(cat_name)
 	end, { "Create new category" })
@@ -176,7 +179,8 @@ end
 function M.set_file_category(name)
 	select_category(name, function(cat_name)
 		if cat_name == "Create new category" then
-			cat_name = M.create_category(nil)
+			M.create_category(nil)
+			return
 		end
 		manager.set_file_category(cat_name)
 	end, { "Create new category" })
